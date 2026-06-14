@@ -1,0 +1,9 @@
+# local/generated clutter
+.DS_Store
+*.log
+
+# never commit secrets or machine state
+.env
+.env.*
+*.key
+*.pem
