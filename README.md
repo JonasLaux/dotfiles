@@ -52,3 +52,43 @@ Run the regression test with:
 ```bash
 bash tests/test-sync-agent-instructions.sh
 ```
+
+## Terminal agent tmux setup
+
+The portable `cc` / `co` setup lives in:
+
+- `shell/agent-tmux.zsh`
+- `tmux/tmux.conf`
+
+Install or refresh it on a machine with:
+
+```bash
+scripts/sync-terminal-agent-tmux.sh --to-home
+```
+
+This updates:
+
+- `~/.config/dotfiles/agent-tmux.zsh`, copied from the repo
+- `~/.tmux.conf`, copied from `tmux/tmux.conf`
+- `~/.zshrc`, adding one managed source block while preserving the rest of the file
+
+Preview changes:
+
+```bash
+scripts/sync-terminal-agent-tmux.sh --dry-run
+```
+
+Check for drift:
+
+```bash
+scripts/sync-terminal-agent-tmux.sh --check
+```
+
+The full home `~/.zshrc` is intentionally not tracked because it can contain
+tokens and machine-local environment variables.
+
+Run the regression test with:
+
+```bash
+bash tests/test-sync-terminal-agent-tmux.sh
+```
