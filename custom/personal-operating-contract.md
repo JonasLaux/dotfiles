@@ -21,6 +21,7 @@
 - Discuss the proof plan when the blast radius is non-trivial: what will be run, what success looks like, and what evidence will remain.
 
 ## Research And Review Defaults
+- For all technology-related questions and work, look up the current primary documentation before answering or deciding. Prefer Context7 for retrieving the actual official docs; fall back to official upstream documentation when Context7 is unavailable or incomplete.
 - For non-trivial technical work, research current best practices for the stack before locking in an approach.
 - Use subagents, specialist tools, or Claude Code CLI as review and ping-pong partners when useful.
 - Assume high resource availability by default; optimize for correctness and confidence unless I explicitly say to tone it down.
