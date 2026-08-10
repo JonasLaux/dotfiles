@@ -43,6 +43,9 @@ old codex personal block
 <!-- AUTONOMY DIRECTIVE — DO NOT REMOVE -->
 old autonomy block
 <!-- END AUTONOMY DIRECTIVE -->
+<!-- CODEX GLOBAL DELEGATION POLICY -->
+old delegation block
+<!-- END CODEX GLOBAL DELEGATION POLICY -->
 <!-- omx:generated:agents-md -->
 
 # Generated Codex Body
@@ -80,9 +83,11 @@ HOME="$home" "$script" --check
 
 assert_contains "$home/.codex/AGENTS.md" 'Default to zoomed-out, high-level, simplified explanations.'
 assert_contains "$home/.codex/AGENTS.md" 'YOU ARE AN AUTONOMOUS CODING AGENT.'
+assert_contains "$home/.codex/AGENTS.md" 'The main thread is the Sol orchestrator.'
 assert_contains "$home/.codex/AGENTS.md" 'KEEP OMX GENERATED CONTENT'
 assert_not_contains "$home/.codex/AGENTS.md" 'old codex personal block'
 assert_not_contains "$home/.codex/AGENTS.md" 'old autonomy block'
+assert_not_contains "$home/.codex/AGENTS.md" 'old delegation block'
 
 assert_contains "$home/.claude/CLAUDE.md" 'Default to zoomed-out, high-level, simplified explanations.'
 assert_contains "$home/.claude/CLAUDE.md" 'Never use em dashes'
@@ -91,3 +96,14 @@ assert_not_contains "$home/.claude/CLAUDE.md" 'old claude personal block'
 assert_not_contains "$home/.claude/CLAUDE.md" 'old claude user customizations'
 
 printf 'sync-agent-instructions tests passed\n'
+
+codex_only_home="$tmpdir/codex-only-home"
+mkdir -p "$codex_only_home/.codex" "$codex_only_home/.claude"
+cp "$home/.codex/AGENTS.md" "$codex_only_home/.codex/AGENTS.md"
+cp "$home/.claude/CLAUDE.md" "$codex_only_home/.claude/CLAUDE.md"
+printf '\nCLAUDE ONLY SENTINEL\n' >> "$codex_only_home/.claude/CLAUDE.md"
+HOME="$codex_only_home" "$script" --to-codex
+assert_contains "$codex_only_home/.codex/AGENTS.md" 'The main thread is the Sol orchestrator.'
+assert_contains "$codex_only_home/.claude/CLAUDE.md" 'CLAUDE ONLY SENTINEL'
+
+printf 'codex-only sync test passed\n'

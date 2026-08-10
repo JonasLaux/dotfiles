@@ -8,10 +8,24 @@ The personal instructions live as small fragments:
 
 - `custom/personal-operating-contract.md`
 - `custom/codex-autonomy-directive.md`
+- `custom/codex-global-delegation-policy.md`
 - `custom/claude-global-instructions.md`
 
-The sync script updates only personal sections. It preserves generated OMC/OMX
-blocks in `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`.
+The sync script updates only managed instruction sections. It preserves generated
+OMC/OMX blocks in `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`.
+
+Codex's machine-local runtime defaults are kept in `~/.codex/config.toml`:
+
+```toml
+model = "gpt-5.6-sol"
+
+[agents]
+default_subagent_model = "gpt-5.6-luna"
+default_subagent_reasoning_effort = "high"
+```
+
+The config file itself is not tracked because it contains machine-local paths,
+plugin state, and environment settings.
 
 Preview changes:
 
@@ -33,7 +47,7 @@ scripts/sync-agent-instructions.sh --to-home
 
 This updates:
 
-- `~/.codex/AGENTS.md`, replacing only the personal contract and autonomy directive markers
+- `~/.codex/AGENTS.md`, replacing only the managed personal, autonomy, and Codex delegation blocks
 - `~/.claude/CLAUDE.md`, replacing only the personal contract and `<!-- User customizations -->` section
 
 Refresh the repo fragments from the current home files:

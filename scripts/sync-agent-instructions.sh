@@ -3,9 +3,10 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: scripts/sync-agent-instructions.sh [--to-home|--check|--dry-run|--from-home|--from-claude]
+Usage: scripts/sync-agent-instructions.sh [--to-home|--to-codex|--check|--dry-run|--from-home|--from-claude]
 
 --to-home      Sync repo fragments into ~/.codex/AGENTS.md and ~/.claude/CLAUDE.md (default)
+--to-codex     Sync repo fragments into ~/.codex/AGENTS.md only
 --check        Exit non-zero when home files differ from repo fragments
 --dry-run      Print unified diffs without writing
 --from-home    Refresh repo fragments from current home files
@@ -17,7 +18,7 @@ mode="${1:---to-home}"
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 case "$mode" in
-  --to-home|--check|--dry-run|--from-home|--from-claude)
+  --to-home|--to-codex|--check|--dry-run|--from-home|--from-claude)
     ;;
   -h|--help)
     usage
@@ -78,6 +79,7 @@ if mode == "--from-claude":
 custom_dir = repo_root / "custom"
 personal_path = custom_dir / "personal-operating-contract.md"
 autonomy_path = custom_dir / "codex-autonomy-directive.md"
+delegation_path = custom_dir / "codex-global-delegation-policy.md"
 claude_custom_path = custom_dir / "claude-global-instructions.md"
 
 codex_path = home / ".codex" / "AGENTS.md"
@@ -87,6 +89,8 @@ PERSONAL_START = "<!-- PERSONAL OPERATING CONTRACT — PREPEND AND PRESERVE -->"
 PERSONAL_END = "<!-- END PERSONAL OPERATING CONTRACT -->"
 AUTONOMY_START = "<!-- AUTONOMY DIRECTIVE — DO NOT REMOVE -->"
 AUTONOMY_END = "<!-- END AUTONOMY DIRECTIVE -->"
+DELEGATION_START = "<!-- CODEX GLOBAL DELEGATION POLICY -->"
+DELEGATION_END = "<!-- END CODEX GLOBAL DELEGATION POLICY -->"
 CLAUDE_USER_MARKER = "<!-- User customizations -->"
 
 
@@ -177,6 +181,14 @@ def build_codex(existing):
         AUTONOMY_END,
         insert="after",
         after_marker=PERSONAL_END,
+    )
+    text = replace_or_insert_block(
+        text,
+        normalized_file(delegation_path),
+        DELEGATION_START,
+        DELEGATION_END,
+        insert="after",
+        after_marker=AUTONOMY_END,
     )
     return text.rstrip() + "\n"
 
@@ -271,6 +283,8 @@ elif mode == "--to-home":
         changed = write_if_changed(path, desired) or changed
     if not changed:
         print("Agent instructions are already in sync")
+elif mode == "--to-codex":
+    write_if_changed(codex_path, build_codex(read_text(codex_path)))
 elif mode == "--from-home":
     codex = read_text(codex_path)
     claude = read_text(claude_path)
@@ -286,6 +300,10 @@ elif mode == "--from-home":
     write_fragment(
         autonomy_path,
         extract_block(codex, AUTONOMY_START, AUTONOMY_END, codex_path),
+    )
+    write_fragment(
+        delegation_path,
+        extract_block(codex, DELEGATION_START, DELEGATION_END, codex_path),
     )
     if CLAUDE_USER_MARKER not in claude:
         raise SystemExit(f"Could not find {CLAUDE_USER_MARKER} in {claude_path}")
