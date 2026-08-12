@@ -1,6 +1,7 @@
 # local/generated clutter
 .DS_Store
 *.log
+/docs/
 
 # never commit secrets or machine state
 .env
