@@ -20,7 +20,7 @@
 - When a real problem or decision exists, use **Problem:**, **Solution:**, and **Need from you:**.
 - Research enough before recommending the solution.
 - Skip the labels when they add noise.
-- Stop after the result and proof when no action remains.
+- When work is unfinished, end with one concrete next action. When finished, stop after the result and proof.
 - Use simple words, short sentences, and no walls of text or filler.
 - Use numbered steps for multi-step tasks.
 - Keep the active list to five items or fewer.
