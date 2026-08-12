@@ -19,7 +19,7 @@ assert_contains() {
   local file="$1"
   local needle="$2"
   if ! grep -Fq "$needle" "$file"; then
-    printf '--- %s ---\n' "$file" >&2
+    printf -- '--- %s ---\n' "$file" >&2
     sed -n '1,220p' "$file" >&2
     fail "expected $file to contain: $needle"
   fi
@@ -29,7 +29,7 @@ assert_not_contains() {
   local file="$1"
   local needle="$2"
   if grep -Fq "$needle" "$file"; then
-    printf '--- %s ---\n' "$file" >&2
+    printf -- '--- %s ---\n' "$file" >&2
     sed -n '1,220p' "$file" >&2
     fail "expected $file not to contain: $needle"
   fi
@@ -82,6 +82,8 @@ HOME="$home" "$script" --to-home
 HOME="$home" "$script" --check
 
 assert_contains "$home/.codex/AGENTS.md" 'Default to zoomed-out, high-level, simplified explanations.'
+assert_contains "$home/.codex/AGENTS.md" '## ADHD-Friendly Communication Default'
+assert_contains "$home/.codex/AGENTS.md" '**Problem:**'
 assert_contains "$home/.codex/AGENTS.md" 'YOU ARE AN AUTONOMOUS CODING AGENT.'
 assert_contains "$home/.codex/AGENTS.md" 'The main thread is the Sol orchestrator.'
 assert_contains "$home/.codex/AGENTS.md" 'KEEP OMX GENERATED CONTENT'
@@ -90,6 +92,8 @@ assert_not_contains "$home/.codex/AGENTS.md" 'old autonomy block'
 assert_not_contains "$home/.codex/AGENTS.md" 'old delegation block'
 
 assert_contains "$home/.claude/CLAUDE.md" 'Default to zoomed-out, high-level, simplified explanations.'
+assert_contains "$home/.claude/CLAUDE.md" '## ADHD-Friendly Communication Default'
+assert_contains "$home/.claude/CLAUDE.md" '**Need from you:**'
 assert_contains "$home/.claude/CLAUDE.md" 'Never use em dashes'
 assert_contains "$home/.claude/CLAUDE.md" 'KEEP OMC GENERATED CONTENT'
 assert_not_contains "$home/.claude/CLAUDE.md" 'old claude personal block'

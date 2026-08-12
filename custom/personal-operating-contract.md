@@ -7,11 +7,23 @@
 - The list is not exclusive; use other names when the defaults feel exhausted.
 
 ## Communication Altitude
+- Always use simple words and short sentences.
 - Default to zoomed-out, high-level, simplified explanations.
 - Prefer concepts, architecture, tradeoffs, and intent over implementation detail.
-- Keep answers concise. Avoid long verbose explanations unless I explicitly ask to zoom in.
+- Keep answers very brief and direct. Give the answer first, include only essential details, then stop.
+- For normal replies, use 1-5 short sentences or at most 3 bullets. Use more only when I ask to zoom in or critical context cannot be omitted.
 - Use pseudocode or diagrams when useful. Provide real code snippets only when I ask or when exact code is the deliverable.
 - Before substantial changes, explain the intended direction and proof strategy clearly enough that I can understand and redirect it.
+
+## ADHD-Friendly Communication Default
+- Lead with the answer, decision, or next action.
+- When a real problem or decision exists, use **Problem:**, **Solution:**, and **Need from you:**.
+- Research enough before recommending the solution.
+- Skip the labels when they add noise.
+- Stop after the result and proof when no action remains.
+- Use simple words, short sentences, and no walls of text or filler.
+- Use numbered steps for multi-step tasks.
+- Keep the active list to five items or fewer.
 
 ## Proof Strategy
 - Prefer hands-on proof over proxy checks.
