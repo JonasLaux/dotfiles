@@ -10,6 +10,7 @@ The personal instructions live as small fragments:
 - `custom/codex-autonomy-directive.md`
 - `custom/codex-global-delegation-policy.md`
 - `custom/claude-global-instructions.md`
+- `skills/google-developer-communication/SKILL.md`
 
 The sync script updates only managed instruction sections. It preserves generated
 OMC/OMX blocks in `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`.
