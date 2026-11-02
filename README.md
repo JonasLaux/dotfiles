@@ -7,13 +7,14 @@ Private dotfiles and personal agent instructions.
 The personal instructions live as small fragments:
 
 - `custom/personal-operating-contract.md`
-- `custom/codex-autonomy-directive.md`
-- `custom/codex-global-delegation-policy.md`
+- `custom/codex-global-instructions.md`
 - `custom/claude-global-instructions.md`
 - `skills/google-developer-communication/SKILL.md`
 
-The sync script updates only managed instruction sections. It preserves generated
-OMC/OMX blocks in `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`.
+Codex uses the standalone `custom/codex-global-instructions.md` source. Syncing
+Codex replaces `~/.codex/AGENTS.md` completely, which removes stale generated
+framework instructions. The shared personal contract and Claude source remain
+separate.
 
 Codex's machine-local runtime defaults are kept in `~/.codex/config.toml`:
 
@@ -40,24 +41,21 @@ Check for drift:
 scripts/sync-agent-instructions.sh --check
 ```
 
+Use `--check-codex` to check Codex without requiring the separate Claude file
+to match its source.
+
 Sync into local tools:
 
 ```bash
-scripts/sync-agent-instructions.sh --to-home
+scripts/sync-agent-instructions.sh --to-codex
 ```
 
 This updates:
 
-- `~/.codex/AGENTS.md`, replacing only the managed personal, autonomy, and Codex delegation blocks
-- `~/.claude/CLAUDE.md`, replacing only the personal contract and `<!-- User customizations -->` section
+- `~/.codex/AGENTS.md`, from the standalone Codex source
+- `~/.claude/CLAUDE.md`, only when the explicit `--to-home` mode is used
 
-Refresh the repo fragments from the current home files:
-
-```bash
-scripts/sync-agent-instructions.sh --from-home
-```
-
-`--from-claude` is kept as a compatibility alias for `--from-home`.
+Use `--to-codex` for Codex-only changes. Writes do not create backup files.
 
 The script is intended to work on macOS and Linux. It avoids in-place `sed`
 differences and requires Bash plus Python 3.

@@ -81,32 +81,23 @@ assert_contains /tmp/dotfiles-agent-dry-run.out '.codex/AGENTS.md'
 HOME="$home" "$script" --to-home
 HOME="$home" "$script" --check
 
-assert_contains "$home/.codex/AGENTS.md" 'Use Google Developer Documentation Style Guide as the default communication standard:'
-assert_contains "$home/.codex/AGENTS.md" 'Be conversational, friendly, and respectful.'
-assert_contains "$home/.codex/AGENTS.md" 'Use active voice and make clear who performs each action.'
-assert_contains "$home/.codex/AGENTS.md" 'Put conditions before instructions.'
-assert_contains "$home/.codex/AGENTS.md" 'descriptive link text, unambiguous dates'
-assert_contains "$home/.codex/AGENTS.md" 'Address me casually with rotating buddy names'
-assert_contains "$home/.codex/AGENTS.md" 'YOU ARE AN AUTONOMOUS CODING AGENT.'
-assert_contains "$home/.codex/AGENTS.md" 'The main thread is the Sol orchestrator.'
-assert_contains "$home/.codex/AGENTS.md" 'KEEP OMX GENERATED CONTENT'
+assert_contains "$home/.codex/AGENTS.md" '# Codex working agreement'
+assert_contains "$home/.codex/AGENTS.md" 'Act autonomously on requested, reversible work.'
+assert_contains "$home/.codex/AGENTS.md" 'The primary agent owns'
+assert_contains "$home/.codex/AGENTS.md" 'final synthesis'
+assert_contains "$home/.codex/AGENTS.md" 'Prefer Context7 for'
+assert_not_contains "$home/.codex/AGENTS.md" 'KEEP OMX GENERATED CONTENT'
 assert_not_contains "$home/.codex/AGENTS.md" '## Communication Altitude'
 assert_not_contains "$home/.codex/AGENTS.md" '## ADHD-Friendly Communication Default'
 assert_not_contains "$home/.codex/AGENTS.md" 'old codex personal block'
 assert_not_contains "$home/.codex/AGENTS.md" 'old autonomy block'
 assert_not_contains "$home/.codex/AGENTS.md" 'old delegation block'
+if find "$home/.codex" -name '*.bak.*' -print -quit | grep -q .; then
+  fail 'sync created a backup file'
+fi
 
-assert_contains "$home/.claude/CLAUDE.md" 'Use Google Developer Documentation Style Guide as the default communication standard:'
-assert_contains "$home/.claude/CLAUDE.md" 'Be conversational, friendly, and respectful.'
-assert_contains "$home/.claude/CLAUDE.md" 'Use active voice and make clear who performs each action.'
-assert_contains "$home/.claude/CLAUDE.md" 'Put conditions before instructions.'
-assert_contains "$home/.claude/CLAUDE.md" 'descriptive link text, unambiguous dates'
-assert_contains "$home/.claude/CLAUDE.md" 'Address me casually with rotating buddy names'
-assert_contains "$home/.claude/CLAUDE.md" 'KEEP OMC GENERATED CONTENT'
-assert_not_contains "$home/.claude/CLAUDE.md" '## Communication Altitude'
-assert_not_contains "$home/.claude/CLAUDE.md" '## ADHD-Friendly Communication Default'
-assert_not_contains "$home/.claude/CLAUDE.md" 'Never use em dashes'
-assert_not_contains "$home/.claude/CLAUDE.md" 'Speak like a highly competent technical chief of staff'
+cmp -s "$home/.claude/CLAUDE.md" "$repo_root/custom/claude-global-instructions.md" || fail 'Claude file differs from its standalone source'
+assert_not_contains "$home/.claude/CLAUDE.md" 'KEEP OMC GENERATED CONTENT'
 assert_not_contains "$home/.claude/CLAUDE.md" 'old claude personal block'
 assert_not_contains "$home/.claude/CLAUDE.md" 'old claude user customizations'
 
@@ -117,8 +108,15 @@ mkdir -p "$codex_only_home/.codex" "$codex_only_home/.claude"
 cp "$home/.codex/AGENTS.md" "$codex_only_home/.codex/AGENTS.md"
 cp "$home/.claude/CLAUDE.md" "$codex_only_home/.claude/CLAUDE.md"
 printf '\nCLAUDE ONLY SENTINEL\n' >> "$codex_only_home/.claude/CLAUDE.md"
-HOME="$codex_only_home" "$script" --to-codex
-assert_contains "$codex_only_home/.codex/AGENTS.md" 'The main thread is the Sol orchestrator.'
+HOME="$codex_only_home" "$script"
 assert_contains "$codex_only_home/.claude/CLAUDE.md" 'CLAUDE ONLY SENTINEL'
+HOME="$codex_only_home" "$script" --to-codex
+assert_contains "$codex_only_home/.codex/AGENTS.md" '# Codex working agreement'
+assert_contains "$codex_only_home/.claude/CLAUDE.md" 'CLAUDE ONLY SENTINEL'
+
+first_codex_checksum="$(cksum "$codex_only_home/.codex/AGENTS.md")"
+HOME="$codex_only_home" "$script" --to-codex
+second_codex_checksum="$(cksum "$codex_only_home/.codex/AGENTS.md")"
+[[ "$first_codex_checksum" == "$second_codex_checksum" ]] || fail '--to-codex is not idempotent'
 
 printf 'codex-only sync test passed\n'
